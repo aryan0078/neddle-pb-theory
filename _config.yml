@@ -1,0 +1,63 @@
+# GitHub Pages Jekyll Configuration
+title: "Interactive Math & Physics Explorations"
+description: "Explore mathematical concepts and quantum physics through interactive visualizations and simulations"
+url: "https://aryan0078.github.io"
+baseurl: "/neddle-pb-theory"
+
+# Author information
+author:
+  name: "Aryan Singh"
+  email: "aryan8931080555@gmail.com"
+
+# Social media
+github_username: aryan0078
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# SEO settings
+lang: en
+twitter:
+  username: yourusername
+  card: summary_large_image
+
+# Google Analytics (optional - add your tracking ID)
+# google_analytics: UA-XXXXXXXXX-X
+
+# Exclude from processing
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - .gitignore
+  - .DS_Store
+
+# Include files
+include:
+  - _pages
+
+# Collections (if you plan to add blog posts or documentation)
+collections:
+  projects:
+    output: true
+    permalink: /:collection/:name/
+
+# Default values
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+      author: "Your Name" 

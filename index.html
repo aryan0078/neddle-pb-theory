@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Math & Physics Explorations</title>
+    <meta name="description" content="Explore interactive visualizations and simulations of mathematical concepts and quantum physics phenomena">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .section h2 {
+            color: #4a5568;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .section h2::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 0.5rem auto;
+            border-radius: 2px;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .project-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2d3748;
+            text-transform: capitalize;
+        }
+
+        .project-description {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .math-icon {
+            color: #3182ce;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .physics-icon {
+            color: #805ad5;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 3rem;
+            opacity: 0.8;
+        }
+
+        .github-link {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            text-decoration: none;
+            margin-top: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .github-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Interactive Math & Physics</h1>
+            <p class="subtitle">Explore mathematical concepts and quantum physics through interactive visualizations</p>
+            
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-number">8</span>
+                    <span class="stat-label">Math Projects</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">6</span>
+                    <span class="stat-label">Physics Projects</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">14</span>
+                    <span class="stat-label">Total Explorations</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="section">
+            <h2>🔢 Mathematics</h2>
+            <div class="projects-grid">
+                <a href="maths/pascals-triangle/" class="project-card">
+                    <div class="math-icon">📐</div>
+                    <div class="project-title">Pascal's Triangle</div>
+                    <div class="project-description">Explore the fascinating patterns and properties of Pascal's triangle through interactive visualization.</div>
+                </a>
+                
+                <a href="maths/fibonacci-sequence/" class="project-card">
+                    <div class="math-icon">🌀</div>
+                    <div class="project-title">Fibonacci Sequence</div>
+                    <div class="project-description">Discover the golden ratio and spiral patterns in nature through the Fibonacci sequence.</div>
+                </a>
+                
+                <a href="maths/prime-number-visualizer/" class="project-card">
+                    <div class="math-icon">🔍</div>
+                    <div class="project-title">Prime Number Visualizer</div>
+                    <div class="project-description">Visualize prime numbers and discover patterns in their distribution across number systems.</div>
+                </a>
+                
+                <a href="maths/birthday-paradox/" class="project-card">
+                    <div class="math-icon">🎂</div>
+                    <div class="project-title">Birthday Paradox</div>
+                    <div class="project-description">Explore the counterintuitive probability theory behind the famous birthday paradox.</div>
+                </a>
+                
+                <a href="maths/monty-hall-problem/" class="project-card">
+                    <div class="math-icon">🚪</div>
+                    <div class="project-title">Monty Hall Problem</div>
+                    <div class="project-description">Interactive simulation of the classic probability puzzle that challenges intuition.</div>
+                </a>
+                
+                <a href="maths/kelly-criterion/" class="project-card">
+                    <div class="math-icon">📊</div>
+                    <div class="project-title">Kelly Criterion</div>
+                    <div class="project-description">Learn about optimal betting strategies and risk management through mathematical modeling.</div>
+                </a>
+                
+                <a href="maths/benfords-law/" class="project-card">
+                    <div class="math-icon">📈</div>
+                    <div class="project-title">Benford's Law</div>
+                    <div class="project-description">Discover the surprising frequency distribution of leading digits in real-world datasets.</div>
+                </a>
+                
+                <a href="maths/buffon's-needle-problem/" class="project-card">
+                    <div class="math-icon">📏</div>
+                    <div class="project-title">Buffon's Needle Problem</div>
+                    <div class="project-description">Estimate π through geometric probability using the classic needle-dropping experiment.</div>
+                </a>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>⚛️ Quantum Physics</h2>
+            <div class="projects-grid">
+                <a href="physics/qunatum-physics/quantum-superposition/" class="project-card">
+                    <div class="physics-icon">🌊</div>
+                    <div class="project-title">Quantum Superposition</div>
+                    <div class="project-description">Visualize the fundamental principle where particles exist in multiple states simultaneously.</div>
+                </a>
+                
+                <a href="physics/qunatum-physics/quantum-entanglement/" class="project-card">
+                    <div class="physics-icon">🔗</div>
+                    <div class="project-title">Quantum Entanglement</div>
+                    <div class="project-description">Explore the "spooky action at a distance" phenomenon that Einstein found troubling.</div>
+                </a>
+                
+                <a href="physics/qunatum-physics/schrodinger-equation/" class="project-card">
+                    <div class="physics-icon">🧮</div>
+                    <div class="project-title">Schrödinger Equation</div>
+                    <div class="project-description">Interactive exploration of the fundamental equation governing quantum mechanical systems.</div>
+                </a>
+                
+                <a href="physics/qunatum-physics/quantum-computing-basics/" class="project-card">
+                    <div class="physics-icon">💻</div>
+                    <div class="project-title">Quantum Computing Basics</div>
+                    <div class="project-description">Learn the fundamentals of quantum computing and quantum information processing.</div>
+                </a>
+                
+                <a href="physics/qunatum-physics/quantum-teleportation/" class="project-card">
+                    <div class="physics-icon">📡</div>
+                    <div class="project-title">Quantum Teleportation</div>
+                    <div class="project-description">Understand how quantum information can be transmitted across arbitrary distances.</div>
+                </a>
+                
+                <a href="physics/qunatum-physics/black-hole-3d/" class="project-card">
+                    <div class="physics-icon">🕳️</div>
+                    <div class="project-title">Black Hole 3D</div>
+                    <div class="project-description">3D visualization of black holes and their effects on spacetime geometry.</div>
+                </a>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2024 Interactive Math & Physics Explorations</p>
+            <a href="https://github.com/yourusername/neddle-pb-theory" class="github-link">View on GitHub</a>
+        </footer>
+    </div>
+</body>
+</html> 
