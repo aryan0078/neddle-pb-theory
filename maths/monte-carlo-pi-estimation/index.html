@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monte Carlo Pi Estimation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col items-center py-10">
+    <h1 class="text-3xl font-bold mb-6 text-blue-700">Monte Carlo Pi Estimation</h1>
+    
+    <div class="bg-white p-6 rounded-lg shadow mb-6 max-w-4xl">
+        <p class="text-gray-700 mb-4">
+            The Monte Carlo method estimates π by randomly throwing points at a unit square containing a quarter circle. 
+            The ratio of points inside the circle to total points approximates π/4.
+        </p>
+        <div class="bg-blue-50 p-4 rounded border-l-4 border-blue-400">
+            <strong>Formula:</strong> π ≈ 4 × (points inside circle) / (total points)
+        </div>
+    </div>
+
+    <div id="controls" class="flex flex-col md:flex-row items-center gap-4 bg-white p-6 rounded-lg shadow mb-8">
+        <button id="addPointsBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded transition">Add Points</button>
+        <button id="resetBtn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-4 py-2 rounded transition">Reset</button>
+        <label for="pointsPerClick" class="font-medium text-gray-700">Points per click:</label>
+        <input type="number" id="pointsPerClick" value="100" min="1" max="10000" class="w-20 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        <div class="flex flex-col md:ml-6">
+            <div id="piEstimate" class="text-lg font-semibold text-green-700">Estimated π: N/A</div>
+            <div id="accuracy" class="text-lg font-semibold text-purple-700">Error: N/A</div>
+            <div id="pointCount" class="text-gray-600">Points: 0 (Inside: 0, Outside: 0)</div>
+        </div>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-8 items-start">
+        <div id="canvas-container" class="bg-white p-4 rounded-lg shadow">
+            <canvas id="piCanvas" width="400" height="400" class="border border-gray-300 rounded"></canvas>
+        </div>
+        
+        <div class="bg-white p-6 rounded-lg shadow max-w-md">
+            <h3 class="text-xl font-bold mb-4 text-gray-800">Convergence Chart</h3>
+            <canvas id="convergenceCanvas" width="300" height="200" class="border border-gray-300 rounded"></canvas>
+            <div class="mt-4">
+                <div class="text-sm text-gray-600">
+                    <div class="flex items-center mb-2">
+                        <div class="w-4 h-4 bg-green-500 mr-2 rounded"></div>
+                        <span>Pi Estimate</span>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-4 h-4 border-2 border-red-500 mr-2"></div>
+                        <span>Actual π = 3.14159...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-10 text-gray-400 text-sm">Monte Carlo Pi Estimation &copy; 2024</footer>
+
+    <script>
+        const canvas = document.getElementById('piCanvas');
+        const ctx = canvas.getContext('2d');
+        const convergenceCanvas = document.getElementById('convergenceCanvas');
+        const convCtx = convergenceCanvas.getContext('2d');
+        const addPointsBtn = document.getElementById('addPointsBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const piEstimateDiv = document.getElementById('piEstimate');
+        const accuracyDiv = document.getElementById('accuracy');
+        const pointCountDiv = document.getElementById('pointCount');
+        const pointsPerClickInput = document.getElementById('pointsPerClick');
+
+        let totalPoints = 0;
+        let pointsInside = 0;
+        let estimateHistory = [];
+        const canvasSize = 400;
+        const actualPi = Math.PI;
+
+        function drawCircle() {
+            ctx.clearRect(0, 0, canvasSize, canvasSize);
+            
+            // Draw quarter circle
+            ctx.beginPath();
+            ctx.arc(0, canvasSize, canvasSize, 0, Math.PI/2);
+            ctx.strokeStyle = '#2563eb';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            // Draw square outline
+            ctx.beginPath();
+            ctx.rect(0, 0, canvasSize, canvasSize);
+            ctx.strokeStyle = '#6b7280';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+
+        function addRandomPoint() {
+            const x = Math.random() * canvasSize;
+            const y = Math.random() * canvasSize;
+            
+            // Check if point is inside quarter circle
+            const distance = Math.sqrt(x*x + (canvasSize-y)*(canvasSize-y));
+            const isInside = distance <= canvasSize;
+            
+            // Draw point
+            ctx.beginPath();
+            ctx.arc(x, y, 2, 0, 2 * Math.PI);
+            ctx.fillStyle = isInside ? '#ef4444' : '#3b82f6';
+            ctx.fill();
+            
+            totalPoints++;
+            if (isInside) pointsInside++;
+        }
+
+        function addMultiplePoints(count) {
+            for (let i = 0; i < count; i++) {
+                addRandomPoint();
+            }
+            updateEstimate();
+            updateConvergenceChart();
+        }
+
+        function updateEstimate() {
+            if (totalPoints === 0) {
+                piEstimateDiv.textContent = 'Estimated π: N/A';
+                accuracyDiv.textContent = 'Error: N/A';
+            } else {
+                const piEstimate = 4 * pointsInside / totalPoints;
+                const error = Math.abs(piEstimate - actualPi);
+                const errorPercent = (error / actualPi * 100).toFixed(2);
+                
+                piEstimateDiv.textContent = `Estimated π: ${piEstimate.toFixed(6)}`;
+                accuracyDiv.textContent = `Error: ${error.toFixed(6)} (${errorPercent}%)`;
+                
+                estimateHistory.push(piEstimate);
+                if (estimateHistory.length > 100) {
+                    estimateHistory.shift();
+                }
+            }
+            pointCountDiv.textContent = `Points: ${totalPoints} (Inside: ${pointsInside}, Outside: ${totalPoints - pointsInside})`;
+        }
+
+        function updateConvergenceChart() {
+            convCtx.clearRect(0, 0, 300, 200);
+            
+            if (estimateHistory.length < 2) return;
+            
+            // Draw grid
+            convCtx.strokeStyle = '#e5e7eb';
+            convCtx.lineWidth = 1;
+            for (let i = 0; i <= 10; i++) {
+                const y = i * 20;
+                convCtx.beginPath();
+                convCtx.moveTo(0, y);
+                convCtx.lineTo(300, y);
+                convCtx.stroke();
+            }
+            
+            // Draw actual pi line
+            const piY = 200 - ((actualPi - 2) / 2 * 200);
+            convCtx.strokeStyle = '#ef4444';
+            convCtx.lineWidth = 2;
+            convCtx.setLineDash([5, 5]);
+            convCtx.beginPath();
+            convCtx.moveTo(0, piY);
+            convCtx.lineTo(300, piY);
+            convCtx.stroke();
+            convCtx.setLineDash([]);
+            
+            // Draw estimate curve
+            convCtx.strokeStyle = '#10b981';
+            convCtx.lineWidth = 2;
+            convCtx.beginPath();
+            
+            const maxPoints = Math.min(estimateHistory.length, 100);
+            for (let i = 0; i < maxPoints; i++) {
+                const x = (i / maxPoints) * 300;
+                const estimate = estimateHistory[estimateHistory.length - maxPoints + i];
+                const y = 200 - ((estimate - 2) / 2 * 200);
+                
+                if (i === 0) {
+                    convCtx.moveTo(x, Math.max(0, Math.min(200, y)));
+                } else {
+                    convCtx.lineTo(x, Math.max(0, Math.min(200, y)));
+                }
+            }
+            convCtx.stroke();
+            
+            // Draw axis labels
+            convCtx.fillStyle = '#374151';
+            convCtx.font = '12px Arial';
+            convCtx.fillText('2.0', 5, 195);
+            convCtx.fillText('4.0', 5, 15);
+            convCtx.fillText('π', 280, piY - 5);
+        }
+
+        function reset() {
+            totalPoints = 0;
+            pointsInside = 0;
+            estimateHistory = [];
+            drawCircle();
+            updateEstimate();
+            convCtx.clearRect(0, 0, 300, 200);
+        }
+
+        addPointsBtn.addEventListener('click', () => {
+            const count = parseInt(pointsPerClickInput.value, 10) || 100;
+            addMultiplePoints(count);
+        });
+
+        resetBtn.addEventListener('click', reset);
+
+        // Initial setup
+        drawCircle();
+        updateEstimate();
+    </script>
+</body>
+</html> 

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pi Approximation Series</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col items-center py-10">
+    <h1 class="text-3xl font-bold mb-6 text-blue-700">Pi Approximation Series</h1>
+    
+    <div class="bg-white p-6 rounded-lg shadow mb-6 max-w-4xl">
+        <p class="text-gray-700 mb-4">
+            Explore different infinite series that converge to π. Each series approaches π at different rates,
+            demonstrating the beauty of mathematical convergence.
+        </p>
+    </div>
+
+    <div id="controls" class="flex flex-col md:flex-row items-center gap-4 bg-white p-6 rounded-lg shadow mb-8">
+        <button id="addTermBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded transition">Add Terms</button>
+        <button id="resetBtn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-4 py-2 rounded transition">Reset</button>
+        <label for="termsPerClick" class="font-medium text-gray-700">Terms per click:</label>
+        <input type="number" id="termsPerClick" value="10" min="1" max="1000" class="w-20 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        
+        <select id="seriesSelect" class="px-3 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <option value="leibniz">Leibniz Series</option>
+            <option value="nilakantha">Nilakantha Series</option>
+            <option value="machin">Machin's Formula</option>
+            <option value="ramanujan">Ramanujan Series</option>
+        </select>
+    </div>
+
+    <div class="flex flex-col lg:flex-row gap-8 items-start max-w-7xl">
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="text-xl font-bold mb-4 text-gray-800">Series Information</h3>
+            <div id="seriesInfo" class="mb-6">
+                <!-- Series info will be populated here -->
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                    <div class="font-semibold text-gray-700">Current Terms:</div>
+                    <div id="currentTerms" class="text-blue-600">0</div>
+                </div>
+                <div>
+                    <div class="font-semibold text-gray-700">Current Estimate:</div>
+                    <div id="currentEstimate" class="text-green-600">N/A</div>
+                </div>
+                <div>
+                    <div class="font-semibold text-gray-700">Error:</div>
+                    <div id="currentError" class="text-red-600">N/A</div>
+                </div>
+                <div>
+                    <div class="font-semibold text-gray-700">Convergence Rate:</div>
+                    <div id="convergenceRate" class="text-purple-600">N/A</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow flex-1">
+            <h3 class="text-xl font-bold mb-4 text-gray-800">Convergence Visualization</h3>
+            <canvas id="convergenceChart" width="600" height="400"></canvas>
+        </div>
+    </div>
+
+    <div class="mt-8 bg-white p-6 rounded-lg shadow max-w-4xl">
+        <h3 class="text-xl font-bold mb-4 text-gray-800">Terms Visualization</h3>
+        <div id="termsVisualization" class="font-mono text-sm bg-gray-50 p-4 rounded border max-h-32 overflow-y-auto">
+            <!-- Terms will be displayed here -->
+        </div>
+    </div>
+
+    <footer class="mt-10 text-gray-400 text-sm">Pi Approximation Series &copy; 2024</footer>
+
+    <script>
+        const addTermBtn = document.getElementById('addTermBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const termsPerClickInput = document.getElementById('termsPerClick');
+        const seriesSelect = document.getElementById('seriesSelect');
+        const seriesInfo = document.getElementById('seriesInfo');
+        const currentTermsDiv = document.getElementById('currentTerms');
+        const currentEstimateDiv = document.getElementById('currentEstimate');
+        const currentErrorDiv = document.getElementById('currentError');
+        const convergenceRateDiv = document.getElementById('convergenceRate');
+        const termsVisualization = document.getElementById('termsVisualization');
+
+        let chart;
+        let currentSeries = 'leibniz';
+        let n = 0;
+        let estimates = [];
+        let actualPi = Math.PI;
+
+        const seriesData = {
+            leibniz: {
+                name: "Leibniz Series",
+                formula: "π/4 = 1 - 1/3 + 1/5 - 1/7 + 1/9 - ...",
+                description: "Also known as the Gregory-Leibniz series. Converges slowly with alternating terms.",
+                calculate: (n) => {
+                    let sum = 0;
+                    for (let i = 0; i < n; i++) {
+                        sum += Math.pow(-1, i) / (2 * i + 1);
+                    }
+                    return 4 * sum;
+                },
+                getTerm: (i) => `${i % 2 === 0 ? '+' : '-'} 1/${2 * i + 1}`
+            },
+            nilakantha: {
+                name: "Nilakantha Series",
+                formula: "π = 3 + 4/(2×3×4) - 4/(4×5×6) + 4/(6×7×8) - ...",
+                description: "Converges faster than Leibniz series. Uses consecutive integers in denominators.",
+                calculate: (n) => {
+                    let sum = 3;
+                    for (let i = 1; i < n; i++) {
+                        const k = 2 * i;
+                        sum += Math.pow(-1, i + 1) * 4 / (k * (k + 1) * (k + 2));
+                    }
+                    return sum;
+                },
+                getTerm: (i) => {
+                    if (i === 0) return '3';
+                    const k = 2 * i;
+                    return `${i % 2 === 1 ? '+' : '-'} 4/(${k}×${k + 1}×${k + 2})`;
+                }
+            },
+            machin: {
+                name: "Machin's Formula",
+                formula: "π/4 = 4×arctan(1/5) - arctan(1/239)",
+                description: "Uses arctangent Taylor series. Very efficient for computing π to high precision.",
+                calculate: (n) => {
+                    const arctan = (x, terms) => {
+                        let sum = 0;
+                        for (let i = 0; i < terms; i++) {
+                            sum += Math.pow(-1, i) * Math.pow(x, 2 * i + 1) / (2 * i + 1);
+                        }
+                        return sum;
+                    };
+                    return 4 * (4 * arctan(1/5, n) - arctan(1/239, n));
+                },
+                getTerm: (i) => `Term ${i + 1} of Taylor series`
+            },
+            ramanujan: {
+                name: "Ramanujan Series",
+                formula: "1/π = (2√2/9801) × Σ[(4k)!(1103+26390k)]/[((k!)^4)(396^(4k))]",
+                description: "Extremely fast convergence. Each term gives about 8 correct digits of π.",
+                calculate: (n) => {
+                    if (n === 0) return 3;
+                    let sum = 0;
+                    const constant = 2 * Math.sqrt(2) / 9801;
+                    for (let k = 0; k < n; k++) {
+                        const numerator = factorial(4 * k) * (1103 + 26390 * k);
+                        const denominator = Math.pow(factorial(k), 4) * Math.pow(396, 4 * k);
+                        sum += numerator / denominator;
+                    }
+                    return 1 / (constant * sum);
+                },
+                getTerm: (i) => `k=${i}: Complex term with factorials`
+            }
+        };
+
+        function factorial(n) {
+            if (n <= 1) return 1;
+            let result = 1;
+            for (let i = 2; i <= Math.min(n, 50); i++) { // Limit to prevent overflow
+                result *= i;
+            }
+            return result;
+        }
+
+        function updateSeriesInfo() {
+            const series = seriesData[currentSeries];
+            seriesInfo.innerHTML = `
+                <h4 class="font-bold text-lg text-blue-600 mb-2">${series.name}</h4>
+                <div class="bg-gray-50 p-3 rounded mb-3 font-mono text-sm">${series.formula}</div>
+                <p class="text-gray-700">${series.description}</p>
+            `;
+        }
+
+        function addTerms(count) {
+            for (let i = 0; i < count; i++) {
+                n++;
+                const estimate = seriesData[currentSeries].calculate(n);
+                estimates.push(estimate);
+            }
+            updateDisplay();
+            updateChart();
+        }
+
+        function updateDisplay() {
+            currentTermsDiv.textContent = n;
+            
+            if (estimates.length > 0) {
+                const currentEstimate = estimates[estimates.length - 1];
+                const error = Math.abs(currentEstimate - actualPi);
+                
+                currentEstimateDiv.textContent = currentEstimate.toFixed(8);
+                currentErrorDiv.textContent = error.toExponential(3);
+                
+                // Calculate convergence rate
+                if (estimates.length > 1) {
+                    const prevError = Math.abs(estimates[estimates.length - 2] - actualPi);
+                    const currentError = error;
+                    const rate = prevError / currentError;
+                    convergenceRateDiv.textContent = rate.toFixed(2) + 'x';
+                }
+            }
+
+            // Update terms visualization
+            updateTermsVisualization();
+        }
+
+        function updateTermsVisualization() {
+            let html = '';
+            const maxTerms = Math.min(n, 20);
+            for (let i = 0; i < maxTerms; i++) {
+                html += seriesData[currentSeries].getTerm(i);
+                if (i < maxTerms - 1) html += ' ';
+            }
+            if (n > 20) {
+                html += ' ... (' + (n - 20) + ' more terms)';
+            }
+            termsVisualization.innerHTML = html;
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('convergenceChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Pi Estimate',
+                        data: [],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 2,
+                        pointRadius: 1
+                    }, {
+                        label: 'Actual π',
+                        data: [],
+                        borderColor: '#ef4444',
+                        borderDash: [5, 5],
+                        borderWidth: 2,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            min: 2.5,
+                            max: 3.5,
+                            title: {
+                                display: true,
+                                text: 'Value'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Number of Terms'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateChart() {
+            const maxPoints = Math.min(estimates.length, 100);
+            const labels = [];
+            const data = [];
+            const piData = [];
+            
+            for (let i = Math.max(0, estimates.length - maxPoints); i < estimates.length; i++) {
+                labels.push(i + 1);
+                data.push(estimates[i]);
+                piData.push(actualPi);
+            }
+            
+            chart.data.labels = labels;
+            chart.data.datasets[0].data = data;
+            chart.data.datasets[1].data = piData;
+            chart.update();
+        }
+
+        function reset() {
+            n = 0;
+            estimates = [];
+            updateDisplay();
+            chart.data.labels = [];
+            chart.data.datasets[0].data = [];
+            chart.data.datasets[1].data = [];
+            chart.update();
+        }
+
+        // Event listeners
+        addTermBtn.addEventListener('click', () => {
+            const count = parseInt(termsPerClickInput.value, 10) || 10;
+            addTerms(count);
+        });
+
+        resetBtn.addEventListener('click', reset);
+
+        seriesSelect.addEventListener('change', (e) => {
+            currentSeries = e.target.value;
+            updateSeriesInfo();
+            reset();
+        });
+
+        // Initialize
+        initChart();
+        updateSeriesInfo();
+        updateDisplay();
+    </script>
+</body>
+</html> 
