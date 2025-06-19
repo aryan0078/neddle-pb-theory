@@ -4,9 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quantum Entanglement</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>Quantum Entanglement</h1>
-    <p>This page will cover the basics and advanced concepts of quantum entanglement, a fundamental phenomenon in quantum physics and quantum computing.</p>
+<body class="bg-gradient-to-br from-blue-100 to-purple-200 min-h-screen flex flex-col items-center justify-center">
+    <div class="bg-white bg-opacity-80 rounded-xl shadow-lg p-8 max-w-2xl w-full mt-10">
+        <h1 class="text-3xl font-bold text-center text-purple-700 mb-4">Quantum Entanglement Visualizer</h1>
+        <div class="mb-6 p-4 bg-purple-50 rounded shadow text-gray-700">
+            <h2 class="text-xl font-semibold mb-2">About Quantum Entanglement</h2>
+            <p class="mb-2">Quantum entanglement is a phenomenon where two or more particles become linked and instantaneously affect each other, no matter the distance. This tool lets you explore measurement correlations for entangled qubits.</p>
+        </div>
+        <div class="flex flex-col md:flex-row gap-6 mb-6">
+            <div class="flex-1">
+                <label class="block text-gray-600 mb-2" for="angleA">Measurement Angle A (°)</label>
+                <input id="angleA" type="range" min="0" max="360" value="0" class="w-full" />
+                <span id="angleA-value" class="text-sm"></span>
+            </div>
+            <div class="flex-1">
+                <label class="block text-gray-600 mb-2" for="angleB">Measurement Angle B (°)</label>
+                <input id="angleB" type="range" min="0" max="360" value="0" class="w-full" />
+                <span id="angleB-value" class="text-sm"></span>
+            </div>
+        </div>
+        <div class="bg-gray-100 rounded p-4 flex flex-col items-center">
+            <canvas id="entanglement-canvas" width="600" height="300" class="mb-2 border rounded shadow"></canvas>
+            <span class="text-xs text-gray-500">Adjust angles to see how measurement outcomes are correlated.</span>
+        </div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html> 

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime Number Visualizer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col items-center py-10">
+    <h1 class="text-3xl font-bold mb-6 text-blue-700">Prime Number Visualizer</h1>
+    <div class="bg-white p-6 rounded-lg shadow w-full max-w-xl mb-8">
+        <div class="mb-4 text-gray-700">Enter a range to see all prime numbers in that interval.</div>
+        <div class="flex items-center gap-4 mb-4">
+            <label for="start" class="font-medium text-gray-700">Start:</label>
+            <input type="number" id="start" value="1" min="1" class="w-24 px-2 py-1 border border-gray-300 rounded">
+            <label for="end" class="font-medium text-gray-700">End:</label>
+            <input type="number" id="end" value="100" min="1" class="w-24 px-2 py-1 border border-gray-300 rounded">
+            <button id="showPrimes" class="bg-blue-600 text-white px-4 py-2 rounded shadow">Show Primes</button>
+        </div>
+        <div id="primes" class="text-green-700 font-mono text-sm whitespace-pre-wrap"></div>
+    </div>
+    <footer class="mt-10 text-gray-400 text-sm">Prime Number Visualizer &copy; 2024</footer>
+    <script>
+        function isPrime(n) {
+            if (n < 2) return false;
+            for (let i = 2; i <= Math.sqrt(n); i++) {
+                if (n % i === 0) return false;
+            }
+            return true;
+        }
+        document.getElementById('showPrimes').onclick = function() {
+            const start = parseInt(document.getElementById('start').value);
+            const end = parseInt(document.getElementById('end').value);
+            let primes = [];
+            for (let n = start; n <= end; n++) {
+                if (isPrime(n)) primes.push(n);
+            }
+            document.getElementById('primes').textContent = primes.join(', ');
+        };
+    </script>
+</body>
+</html> 

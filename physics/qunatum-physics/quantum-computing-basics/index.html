@@ -4,9 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quantum Computing Basics</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <h1>Quantum Computing Basics</h1>
-    <p>This page will introduce the basics of quantum computing, including qubits, gates, and fundamental algorithms.</p>
+<body class="bg-gradient-to-br from-blue-100 to-purple-200 min-h-screen flex flex-col items-center justify-center">
+    <div class="bg-white bg-opacity-80 rounded-xl shadow-lg p-8 max-w-2xl w-full mt-10">
+        <h1 class="text-3xl font-bold text-center text-purple-700 mb-4">Quantum Computing Basics</h1>
+        <div class="mb-6 p-4 bg-purple-50 rounded shadow text-gray-700">
+            <h2 class="text-xl font-semibold mb-2">About Quantum Computing</h2>
+            <p class="mb-2">Quantum computers use qubits and quantum gates to perform computations. Try adding gates to see how the qubit state changes.</p>
+        </div>
+        <div class="flex flex-col md:flex-row gap-6 mb-6">
+            <div class="flex-1">
+                <label class="block text-gray-600 mb-2" for="gate">Add Quantum Gate</label>
+                <select id="gate" class="w-full p-2 border rounded">
+                    <option value="H">Hadamard (H)</option>
+                    <option value="X">Pauli-X (NOT)</option>
+                    <option value="Z">Pauli-Z</option>
+                </select>
+            </div>
+            <div class="flex-1 flex items-end">
+                <button id="add-gate" class="bg-purple-600 text-white px-4 py-2 rounded shadow">Add Gate</button>
+                <button id="reset" class="ml-2 bg-gray-400 text-white px-4 py-2 rounded shadow">Reset</button>
+            </div>
+        </div>
+        <div class="bg-gray-100 rounded p-4 flex flex-col items-center">
+            <canvas id="qc-canvas" width="600" height="200" class="mb-2 border rounded shadow"></canvas>
+            <span class="text-xs text-gray-500">Build a simple quantum circuit and see the qubit state.</span>
+        </div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html> 

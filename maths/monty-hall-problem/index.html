@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monty Hall Problem Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col items-center py-10">
+    <h1 class="text-3xl font-bold mb-6 text-blue-700">Monty Hall Problem Simulator</h1>
+    <div class="bg-white p-6 rounded-lg shadow w-full max-w-xl mb-8">
+        <div class="mb-4 text-gray-700">Pick a door. After you pick, Monty will open a goat door. You can then switch or stay. Try multiple times to see the odds!</div>
+        <div id="doors" class="flex justify-center gap-8 mb-4"></div>
+        <div id="actions" class="flex gap-4 mb-4"></div>
+        <div id="result" class="text-lg font-semibold text-green-700 mb-2"></div>
+        <div id="stats" class="text-gray-600 text-sm"></div>
+    </div>
+    <footer class="mt-10 text-gray-400 text-sm">Monty Hall Problem Simulator &copy; 2024</footer>
+    <script>
+        // Monty Hall logic
+        let state = 'pick';
+        let prize = 0;
+        let picked = null;
+        let revealed = null;
+        let winsSwitch = 0, winsStay = 0, totalSwitch = 0, totalStay = 0;
+
+        function resetGame() {
+            state = 'pick';
+            prize = Math.floor(Math.random() * 3);
+            picked = null;
+            revealed = null;
+            render();
+        }
+
+        function render() {
+            const doorsDiv = document.getElementById('doors');
+            doorsDiv.innerHTML = '';
+            for (let i = 0; i < 3; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'w-24 h-40 border-4 rounded-lg text-2xl font-bold flex flex-col items-center justify-center ' +
+                    (picked === i ? 'border-blue-600 bg-blue-100' : 'border-gray-400 bg-gray-100 hover:bg-gray-200');
+                btn.textContent = '🚪';
+                if (state === 'reveal' && revealed === i) btn.textContent = '🐐';
+                if (state === 'result' && i === prize) btn.textContent = '🚗';
+                btn.disabled = (state !== 'pick' && picked !== i);
+                btn.onclick = () => {
+                    if (state === 'pick') {
+                        picked = i;
+                        // Reveal a goat door
+                        let options = [0,1,2].filter(j => j !== picked && j !== prize);
+                        revealed = options[Math.floor(Math.random() * options.length)];
+                        state = 'switch';
+                        render();
+                    }
+                };
+                doorsDiv.appendChild(btn);
+            }
+            // Actions
+            const actionsDiv = document.getElementById('actions');
+            actionsDiv.innerHTML = '';
+            if (state === 'switch') {
+                const stayBtn = document.createElement('button');
+                stayBtn.textContent = 'Stay';
+                stayBtn.className = 'bg-blue-600 text-white px-4 py-2 rounded shadow';
+                stayBtn.onclick = () => {
+                    state = 'result';
+                    if (picked === prize) { winsStay++; } totalStay++;
+                    render();
+                };
+                const switchBtn = document.createElement('button');
+                switchBtn.textContent = 'Switch';
+                switchBtn.className = 'bg-green-600 text-white px-4 py-2 rounded shadow';
+                switchBtn.onclick = () => {
+                    picked = [0,1,2].find(j => j !== picked && j !== revealed);
+                    state = 'result';
+                    if (picked === prize) { winsSwitch++; } totalSwitch++;
+                    render();
+                };
+                actionsDiv.appendChild(stayBtn);
+                actionsDiv.appendChild(switchBtn);
+            } else if (state === 'result') {
+                const playBtn = document.createElement('button');
+                playBtn.textContent = 'Play Again';
+                playBtn.className = 'bg-gray-500 text-white px-4 py-2 rounded shadow';
+                playBtn.onclick = resetGame;
+                actionsDiv.appendChild(playBtn);
+            }
+            // Result
+            const resultDiv = document.getElementById('result');
+            if (state === 'result') {
+                resultDiv.textContent = (picked === prize) ? 'You win! 🚗' : 'You get a goat 🐐';
+            } else {
+                resultDiv.textContent = '';
+            }
+            // Stats
+            document.getElementById('stats').textContent = `Switch: ${winsSwitch}/${totalSwitch} (${totalSwitch ? (winsSwitch/totalSwitch*100).toFixed(1) : 0}%) | Stay: ${winsStay}/${totalStay} (${totalStay ? (winsStay/totalStay*100).toFixed(1) : 0}%)`;
+        }
+        resetGame();
+    </script>
+</body>
+</html> 

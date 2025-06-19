@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pascal's Triangle Explorer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col items-center py-10">
+    <h1 class="text-3xl font-bold mb-6 text-blue-700">Pascal's Triangle Explorer</h1>
+    <div class="bg-white p-6 rounded-lg shadow w-full max-w-xl mb-8">
+        <div class="mb-4 text-gray-700">Enter the number of rows to build Pascal's Triangle and explore binomial coefficients.</div>
+        <div class="flex items-center gap-4 mb-4">
+            <label for="rows" class="font-medium text-gray-700">Rows:</label>
+            <input type="number" id="rows" value="5" min="1" max="20" class="w-24 px-2 py-1 border border-gray-300 rounded">
+            <button id="build" class="bg-blue-600 text-white px-4 py-2 rounded shadow">Build</button>
+        </div>
+        <div id="triangle" class="font-mono text-green-700 text-sm whitespace-pre mb-4"></div>
+    </div>
+    <footer class="mt-10 text-gray-400 text-sm">Pascal's Triangle Explorer &copy; 2024</footer>
+    <script>
+        function pascalTriangle(n) {
+            const triangle = [];
+            for (let i = 0; i < n; i++) {
+                triangle[i] = [1];
+                for (let j = 1; j < i; j++) {
+                    triangle[i][j] = triangle[i-1][j-1] + triangle[i-1][j];
+                }
+                if (i > 0) triangle[i][i] = 1;
+            }
+            return triangle;
+        }
+        document.getElementById('build').onclick = function() {
+            const n = parseInt(document.getElementById('rows').value);
+            const triangle = pascalTriangle(n);
+            let str = '';
+            for (let i = 0; i < triangle.length; i++) {
+                str += ' '.repeat((n-i)*2);
+                str += triangle[i].join('   ') + '\n';
+            }
+            document.getElementById('triangle').textContent = str;
+        };
+        document.getElementById('build').onclick();
+    </script>
+</body>
+</html> 

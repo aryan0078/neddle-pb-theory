@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced 3D Black Hole Physics Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            chtml: { displayAlign: 'center' }
+        };
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        body {
+            font-family: 'Orbitron', monospace;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #000000 100%);
+        }
+        
+        .equation-panel {
+            position: absolute;
+            background: rgba(13, 13, 35, 0.9);
+            border: 2px solid #4f46e5;
+            border-radius: 15px;
+            padding: 15px;
+            color: #e0e7ff;
+            font-size: 14px;
+            max-width: 300px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(79, 70, 229, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .equation-panel:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 48px rgba(79, 70, 229, 0.5);
+        }
+        
+        .equation-title {
+            color: #a78bfa;
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .equation-content {
+            color: #c7d2fe;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+        }
+        
+        .control-panel {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(13, 13, 35, 0.9);
+            border: 2px solid #4f46e5;
+            border-radius: 15px;
+            padding: 20px;
+            color: #e0e7ff;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(79, 70, 229, 0.3);
+            z-index: 1000;
+        }
+        
+        .control-panel h2 {
+            color: #a78bfa;
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #c7d2fe;
+            font-size: 14px;
+        }
+        
+        .control-group input {
+            width: 100%;
+            background: rgba(79, 70, 229, 0.2);
+            border: 1px solid #4f46e5;
+            border-radius: 5px;
+            padding: 8px;
+            color: #e0e7ff;
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .stats-display {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(13, 13, 35, 0.9);
+            border: 2px solid #4f46e5;
+            border-radius: 15px;
+            padding: 20px;
+            color: #e0e7ff;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(79, 70, 229, 0.3);
+            z-index: 1000;
+            min-width: 200px;
+        }
+        
+        .title-header {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #a78bfa;
+            font-weight: 900;
+            font-size: 24px;
+            text-shadow: 0 0 20px rgba(167, 139, 250, 0.5);
+            z-index: 1000;
+        }
+        
+        .instructions {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #c7d2fe;
+            font-size: 14px;
+            text-align: center;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="title-header">Advanced Black Hole Physics Simulator</div>
+    
+    <div class="control-panel">
+        <h2>Black Hole Parameters</h2>
+        <div class="control-group">
+            <label>Mass (Solar Masses):</label>
+            <input type="range" id="massSlider" min="1" max="100" value="10" step="1">
+            <span id="massValue">10</span>
+        </div>
+        <div class="control-group">
+            <label>Spin (a/M):</label>
+            <input type="range" id="spinSlider" min="0" max="0.99" value="0.5" step="0.01">
+            <span id="spinValue">0.5</span>
+        </div>
+        <div class="control-group">
+            <label>Accretion Rate:</label>
+            <input type="range" id="accretionSlider" min="0.1" max="5" value="1" step="0.1">
+            <span id="accretionValue">1.0</span>
+        </div>
+    </div>
+    
+    <div class="stats-display">
+        <h2>Physical Properties</h2>
+        <div>Schwarzschild Radius: <span id="schwarzschildRadius">29.5 km</span></div>
+        <div>Event Horizon Area: <span id="eventHorizonArea">10,952 km²</span></div>
+        <div>Hawking Temperature: <span id="hawkingTemp">6.17×10⁻⁹ K</span></div>
+        <div>Lifetime: <span id="lifetime">6.64×10⁶⁶ years</span></div>
+        <div>Tidal Force: <span id="tidalForce">High</span></div>
+    </div>
+    
+    <!-- Floating Equation Panels -->
+    <div class="equation-panel" style="top: 15%; left: 5%;">
+        <div class="equation-title">Schwarzschild Metric</div>
+        <div class="equation-content">
+            $ds^2 = -\left(1-\frac{2GM}{c^2r}\right)c^2dt^2 + \frac{dr^2}{1-\frac{2GM}{c^2r}} + r^2d\theta^2 + r^2\sin^2\theta d\phi^2$
+        </div>
+    </div>
+    
+    <div class="equation-panel" style="top: 35%; right: 5%;">
+        <div class="equation-title">Kerr Metric (Rotating BH)</div>
+        <div class="equation-content">
+            $ds^2 = -\frac{\Delta - a^2\sin^2\theta}{\rho^2}c^2dt^2 + \frac{4GMar\sin^2\theta}{c\rho^2}dtd\phi + \frac{\rho^2}{\Delta}dr^2 + \rho^2d\theta^2 + \frac{\sin^2\theta}{\rho^2}[(r^2+a^2)^2 - a^2\Delta\sin^2\theta]d\phi^2$
+        </div>
+    </div>
+    
+    <div class="equation-panel" style="top: 60%; left: 5%;">
+        <div class="equation-title">Einstein Field Equations</div>
+        <div class="equation-content">
+            $R_{\mu\nu} - \frac{1}{2}Rg_{\mu\nu} + \Lambda g_{\mu\nu} = \frac{8\pi G}{c^4}T_{\mu\nu}$
+        </div>
+    </div>
+    
+    <div class="equation-panel" style="top: 80%; right: 5%;">
+        <div class="equation-title">Hawking Radiation</div>
+        <div class="equation-content">
+            $T_H = \frac{\hbar c^3}{8\pi G M k_B}$ <br>
+            $\frac{dM}{dt} = -\frac{\hbar c^4}{15360\pi G^2 M^2}$
+        </div>
+    </div>
+    
+    <div class="equation-panel" style="top: 25%; left: 50%; transform: translateX(-50%);">
+        <div class="equation-title">Bekenstein-Hawking Entropy</div>
+        <div class="equation-content">
+            $S_{BH} = \frac{k_B c^3 A}{4\hbar G} = \frac{k_B c^3}{4\hbar G} \cdot 4\pi r_s^2 = \frac{\pi k_B c^3}{G\hbar}r_s^2$
+        </div>
+    </div>
+    
+    <div class="instructions">
+        Use mouse to rotate • Scroll to zoom • Adjust parameters to see effects on black hole physics
+    </div>
+    
+    <div id="three-container"></div>
+    
+    <script src="script.js"></script>
+</body>
+</html> 
