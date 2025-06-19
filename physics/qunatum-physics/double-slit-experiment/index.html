@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Double Slit Experiment</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-yellow-100 to-red-200 min-h-screen flex flex-col items-center justify-center">
+    <div class="bg-white bg-opacity-80 rounded-xl shadow-lg p-8 max-w-5xl w-full mt-10">
+        <h1 class="text-3xl font-bold text-center text-yellow-700 mb-4">Double Slit Experiment</h1>
+        <div class="mb-6 p-4 bg-yellow-50 rounded shadow text-gray-700">
+            <h2 class="text-xl font-semibold mb-2">About the Double Slit Experiment</h2>
+            <p class="mb-2">The double slit experiment demonstrates the fundamental mystery of quantum mechanics - when particles are not observed, they behave like waves and create interference patterns. When observed, they behave like particles and go through one slit or the other.</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div>
+                <label class="block text-gray-600 mb-2" for="slitSeparation">Slit Separation (μm)</label>
+                <input id="slitSeparation" type="range" min="10" max="100" value="50" step="5" class="w-full" />
+                <span id="slitSeparation-value" class="text-sm">50 μm</span>
+            </div>
+            <div>
+                <label class="block text-gray-600 mb-2" for="slitWidth">Slit Width (μm)</label>
+                <input id="slitWidth" type="range" min="5" max="30" value="10" step="1" class="w-full" />
+                <span id="slitWidth-value" class="text-sm">10 μm</span>
+            </div>
+            <div>
+                <label class="block text-gray-600 mb-2" for="wavelengthDS">Wavelength (nm)</label>
+                <input id="wavelengthDS" type="range" min="400" max="700" value="500" step="10" class="w-full" />
+                <span id="wavelengthDS-value" class="text-sm">500 nm</span>
+            </div>
+        </div>
+        
+        <div class="mb-4">
+            <div class="flex justify-center space-x-4">
+                <button id="which-path-off" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors">No Detector</button>
+                <button id="which-path-on" class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors">Detector On</button>
+                <button id="single-photon" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors">Single Photon</button>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+            <div class="bg-gray-100 rounded p-4">
+                <h3 class="text-center font-semibold mb-2">Experiment Setup</h3>
+                <canvas id="setup-canvas" width="400" height="300" class="w-full border rounded shadow"></canvas>
+            </div>
+            <div class="bg-gray-100 rounded p-4">
+                <h3 class="text-center font-semibold mb-2">Detection Pattern</h3>
+                <canvas id="pattern-canvas" width="400" height="300" class="w-full border rounded shadow"></canvas>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center mb-4">
+            <div class="bg-blue-50 p-3 rounded">
+                <h4 class="font-semibold text-blue-700">Photons Detected</h4>
+                <div id="photon-count" class="text-xl font-bold text-blue-600">0</div>
+            </div>
+            <div class="bg-green-50 p-3 rounded">
+                <h4 class="font-semibold text-green-700">Slit 1 Detections</h4>
+                <div id="slit1-count" class="text-xl font-bold text-green-600">0</div>
+            </div>
+            <div class="bg-red-50 p-3 rounded">
+                <h4 class="font-semibold text-red-700">Slit 2 Detections</h4>
+                <div id="slit2-count" class="text-xl font-bold text-red-600">0</div>
+            </div>
+            <div class="bg-purple-50 p-3 rounded">
+                <h4 class="font-semibold text-purple-700">Visibility</h4>
+                <div id="visibility" class="text-xl font-bold text-purple-600">0.95</div>
+            </div>
+        </div>
+        
+        <div class="text-center space-x-2">
+            <button id="start-experiment" class="bg-yellow-600 text-white py-2 px-6 rounded hover:bg-yellow-700 transition-colors">
+                Start Experiment
+            </button>
+            <button id="reset-experiment" class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700 transition-colors">
+                Reset
+            </button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 

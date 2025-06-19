@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Tunneling</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-green-100 to-blue-200 min-h-screen flex flex-col items-center justify-center">
+    <div class="bg-white bg-opacity-80 rounded-xl shadow-lg p-8 max-w-4xl w-full mt-10">
+        <h1 class="text-3xl font-bold text-center text-green-700 mb-4">Quantum Tunneling Visualizer</h1>
+        <div class="mb-6 p-4 bg-green-50 rounded shadow text-gray-700">
+            <h2 class="text-xl font-semibold mb-2">About Quantum Tunneling</h2>
+            <p class="mb-2">Quantum tunneling is a phenomenon where particles can pass through energy barriers that would be classically insurmountable. This effect allows particles to "tunnel" through potential barriers even when they don't have enough energy to go over them.</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+                <label class="block text-gray-600 mb-2" for="barrierHeight">Barrier Height (eV)</label>
+                <input id="barrierHeight" type="range" min="1" max="10" value="5" step="0.1" class="w-full" />
+                <span id="barrierHeight-value" class="text-sm">5.0 eV</span>
+            </div>
+            <div>
+                <label class="block text-gray-600 mb-2" for="barrierWidth">Barrier Width (nm)</label>
+                <input id="barrierWidth" type="range" min="0.5" max="5" value="2" step="0.1" class="w-full" />
+                <span id="barrierWidth-value" class="text-sm">2.0 nm</span>
+            </div>
+            <div>
+                <label class="block text-gray-600 mb-2" for="particleEnergy">Particle Energy (eV)</label>
+                <input id="particleEnergy" type="range" min="0.5" max="8" value="3" step="0.1" class="w-full" />
+                <span id="particleEnergy-value" class="text-sm">3.0 eV</span>
+            </div>
+            <div>
+                <label class="block text-gray-600 mb-2" for="particleMass">Particle Mass (me)</label>
+                <input id="particleMass" type="range" min="0.1" max="2" value="1" step="0.1" class="w-full" />
+                <span id="particleMass-value" class="text-sm">1.0 me</span>
+            </div>
+        </div>
+        
+        <div class="bg-gray-100 rounded p-4 mb-4">
+            <canvas id="tunneling-canvas" width="800" height="400" class="w-full border rounded shadow"></canvas>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+            <div class="bg-blue-50 p-4 rounded">
+                <h3 class="font-semibold text-blue-700">Transmission Probability</h3>
+                <div id="transmission-prob" class="text-2xl font-bold text-blue-600">0.15</div>
+            </div>
+            <div class="bg-red-50 p-4 rounded">
+                <h3 class="font-semibold text-red-700">Reflection Probability</h3>
+                <div id="reflection-prob" class="text-2xl font-bold text-red-600">0.85</div>
+            </div>
+            <div class="bg-green-50 p-4 rounded">
+                <h3 class="font-semibold text-green-700">Wave Function</h3>
+                <div id="wavefunction-info" class="text-sm text-green-600">ψ(x) = A·e^(ikx) + B·e^(-ikx)</div>
+            </div>
+        </div>
+        
+        <button id="animate-particle" class="mt-4 w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition-colors">
+            Animate Particle
+        </button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 

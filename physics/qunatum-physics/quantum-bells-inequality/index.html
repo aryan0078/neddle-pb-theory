@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bell's Inequality</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-teal-100 to-cyan-200 min-h-screen flex flex-col items-center justify-center">
+    <div class="bg-white bg-opacity-80 rounded-xl shadow-lg p-8 max-w-5xl w-full mt-10">
+        <h1 class="text-3xl font-bold text-center text-teal-700 mb-4">Bell's Inequality & Quantum Non-locality</h1>
+        <div class="mb-6 p-4 bg-teal-50 rounded shadow text-gray-700">
+            <h2 class="text-xl font-semibold mb-2">About Bell's Inequality</h2>
+            <p class="mb-2">Bell's inequality provides a way to test whether quantum mechanics' predictions can be explained by local hidden variable theories. Quantum mechanics violates Bell's inequality, proving that nature exhibits non-local correlations.</p>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div>
+                <label class="block text-gray-600 mb-2" for="angleAlice1">Alice Angle 1 (°)</label>
+                <input id="angleAlice1" type="range" min="0" max="360" value="0" class="w-full" />
+                <span id="angleAlice1-value" class="text-sm">0°</span>
+            </div>
+            <div>
+                <label class="block text-gray-600 mb-2" for="angleAlice2">Alice Angle 2 (°)</label>
+                <input id="angleAlice2" type="range" min="0" max="360" value="45" class="w-full" />
+                <span id="angleAlice2-value" class="text-sm">45°</span>
+            </div>
+            <div>
+                <label class="block text-gray-600 mb-2" for="angleBob1">Bob Angle 1 (°)</label>
+                <input id="angleBob1" type="range" min="0" max="360" value="22.5" class="w-full" />
+                <span id="angleBob1-value" class="text-sm">22.5°</span>
+            </div>
+            <div>
+                <label class="block text-gray-600 mb-2" for="angleBob2">Bob Angle 2 (°)</label>
+                <input id="angleBob2" type="range" min="0" max="360" value="67.5" class="w-full" />
+                <span id="angleBob2-value" class="text-sm">67.5°</span>
+            </div>
+        </div>
+        
+        <div class="bg-gray-100 rounded p-4 mb-6">
+            <h3 class="text-center font-semibold mb-2">Entangled Photon Pairs Experiment</h3>
+            <canvas id="bell-canvas" width="800" height="300" class="w-full border rounded shadow"></canvas>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-blue-50 p-3 rounded text-center">
+                <h4 class="font-semibold text-blue-700">E(a₁,b₁)</h4>
+                <div id="correlation-11" class="text-xl font-bold text-blue-600">-0.707</div>
+            </div>
+            <div class="bg-green-50 p-3 rounded text-center">
+                <h4 class="font-semibold text-green-700">E(a₁,b₂)</h4>
+                <div id="correlation-12" class="text-xl font-bold text-green-600">-0.707</div>
+            </div>
+            <div class="bg-red-50 p-3 rounded text-center">
+                <h4 class="font-semibold text-red-700">E(a₂,b₁)</h4>
+                <div id="correlation-21" class="text-xl font-bold text-red-600">-0.707</div>
+            </div>
+            <div class="bg-purple-50 p-3 rounded text-center">
+                <h4 class="font-semibold text-purple-700">E(a₂,b₂)</h4>
+                <div id="correlation-22" class="text-xl font-bold text-purple-600">0.707</div>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center mb-6">
+            <div class="bg-teal-50 p-4 rounded">
+                <h3 class="font-semibold text-teal-700">Bell Parameter S</h3>
+                <div id="bell-parameter" class="text-2xl font-bold text-teal-600">2.83</div>
+                <div class="text-sm text-gray-600">|E(a₁,b₁) - E(a₁,b₂) + E(a₂,b₁) + E(a₂,b₂)|</div>
+            </div>
+            <div class="bg-yellow-50 p-4 rounded">
+                <h3 class="font-semibold text-yellow-700">Classical Limit</h3>
+                <div class="text-2xl font-bold text-yellow-600">2.00</div>
+                <div class="text-sm text-gray-600">Bell's Inequality: S ≤ 2</div>
+            </div>
+            <div class="bg-orange-50 p-4 rounded">
+                <h3 class="font-semibold text-orange-700">Quantum Maximum</h3>
+                <div class="text-2xl font-bold text-orange-600">2√2 ≈ 2.83</div>
+                <div class="text-sm text-gray-600">Tsirelson's bound</div>
+            </div>
+        </div>
+        
+        <div class="text-center space-x-2 mb-4">
+            <button id="run-experiment" class="bg-teal-600 text-white py-2 px-6 rounded hover:bg-teal-700 transition-colors">
+                Run Experiment
+            </button>
+            <button id="optimal-angles" class="bg-cyan-600 text-white py-2 px-4 rounded hover:bg-cyan-700 transition-colors">
+                Optimal Angles
+            </button>
+            <button id="classical-test" class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700 transition-colors">
+                Classical Test
+            </button>
+        </div>
+        
+        <div id="violation-status" class="text-center p-2 rounded font-semibold">
+            Bell's Inequality is VIOLATED! Quantum mechanics exhibits non-local correlations.
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 

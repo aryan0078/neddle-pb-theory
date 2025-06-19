@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wave-Particle Duality</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-indigo-100 to-pink-200 min-h-screen flex flex-col items-center justify-center">
+    <div class="bg-white bg-opacity-80 rounded-xl shadow-lg p-8 max-w-4xl w-full mt-10">
+        <h1 class="text-3xl font-bold text-center text-indigo-700 mb-4">Wave-Particle Duality Explorer</h1>
+        <div class="mb-6 p-4 bg-indigo-50 rounded shadow text-gray-700">
+            <h2 class="text-xl font-semibold mb-2">About Wave-Particle Duality</h2>
+            <p class="mb-2">Wave-particle duality is the concept that all matter and energy exhibit both wave-like and particle-like properties. This fundamental principle demonstrates that the behavior of quantum objects cannot be captured by a single classical description.</p>
+        </div>
+        
+        <div class="mb-6">
+            <div class="flex justify-center mb-4">
+                <button id="wave-mode" class="px-4 py-2 bg-blue-500 text-white rounded-l hover:bg-blue-600 transition-colors">Wave Mode</button>
+                <button id="particle-mode" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-r hover:bg-gray-400 transition-colors">Particle Mode</button>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+                <label class="block text-gray-600 mb-2" for="frequency">Frequency (Hz)</label>
+                <input id="frequency" type="range" min="1" max="20" value="5" step="0.1" class="w-full" />
+                <span id="frequency-value" class="text-sm">5.0 Hz</span>
+            </div>
+            <div>
+                <label class="block text-gray-600 mb-2" for="amplitude">Amplitude</label>
+                <input id="amplitude" type="range" min="0.1" max="2" value="1" step="0.1" class="w-full" />
+                <span id="amplitude-value" class="text-sm">1.0</span>
+            </div>
+            <div>
+                <label class="block text-gray-600 mb-2" for="wavelength">Wavelength (nm)</label>
+                <input id="wavelength" type="range" min="400" max="700" value="550" step="10" class="w-full" />
+                <span id="wavelength-value" class="text-sm">550 nm</span>
+            </div>
+            <div>
+                <label class="block text-gray-600 mb-2" for="intensity">Intensity</label>
+                <input id="intensity" type="range" min="0.1" max="1" value="0.5" step="0.05" class="w-full" />
+                <span id="intensity-value" class="text-sm">0.5</span>
+            </div>
+        </div>
+        
+        <div class="bg-gray-100 rounded p-4 mb-4">
+            <canvas id="duality-canvas" width="800" height="300" class="w-full border rounded shadow"></canvas>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center mb-4">
+            <div class="bg-blue-50 p-4 rounded">
+                <h3 class="font-semibold text-blue-700">Energy (eV)</h3>
+                <div id="photon-energy" class="text-xl font-bold text-blue-600">2.25</div>
+            </div>
+            <div class="bg-purple-50 p-4 rounded">
+                <h3 class="font-semibold text-purple-700">Momentum (kg⋅m/s)</h3>
+                <div id="photon-momentum" class="text-xl font-bold text-purple-600">1.2×10⁻²⁷</div>
+            </div>
+            <div class="bg-green-50 p-4 rounded">
+                <h3 class="font-semibold text-green-700">de Broglie λ (nm)</h3>
+                <div id="debroglie-wavelength" class="text-xl font-bold text-green-600">550</div>
+            </div>
+        </div>
+        
+        <div class="text-center">
+            <button id="toggle-animation" class="bg-indigo-600 text-white py-2 px-6 rounded hover:bg-indigo-700 transition-colors mr-2">
+                Start Animation
+            </button>
+            <button id="show-interference" class="bg-pink-600 text-white py-2 px-6 rounded hover:bg-pink-700 transition-colors">
+                Show Interference
+            </button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
