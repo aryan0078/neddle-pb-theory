@@ -171,11 +171,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Project Link: [https://github.com/yourusername/neddle-pb-theory](https://github.com/yourusername/neddle-pb-theory)
+- GitHub: [@aryan0078](https://github.com/aryan0078)
+- Project Link: [https://github.com/aryan0078/study-material](https://github.com/aryan0078/study-material)
 
 ---
 
 **Made with ❤️ for education and exploration**
 
-*Last updated: 2024* 
+*Last updated: 2025* 
