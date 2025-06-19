@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schrödinger Equation Visualizer</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-blue-100 to-purple-200 min-h-screen flex flex-col items-center justify-center">
+  <div class="bg-white bg-opacity-80 rounded-xl shadow-lg p-8 max-w-2xl w-full mt-10">
+    <h1 class="text-3xl font-bold text-center text-purple-700 mb-4">Schrödinger Equation Visualizer</h1>
+    <div class="mb-6 p-4 bg-purple-50 rounded shadow text-gray-700">
+      <h2 class="text-xl font-semibold mb-2">About the Schrödinger Equation</h2>
+      <p class="mb-2">The time-independent Schrödinger equation describes the allowed energy states (wavefunctions) of a quantum particle in a potential. In one dimension, it is:</p>
+      <pre class="bg-white rounded p-2 overflow-x-auto text-sm mb-2">- (ħ² / 2m) (d²ψ/dx²) + V(x)ψ = Eψ</pre>
+      <ul class="list-disc pl-6 text-sm mb-2">
+        <li><b>ψ(x)</b>: Wavefunction (probability amplitude)</li>
+        <li><b>V(x)</b>: Potential energy as a function of position</li>
+        <li><b>E</b>: Energy of the state</li>
+        <li><b>ħ</b>: Reduced Planck's constant</li>
+        <li><b>m</b>: Mass of the particle (set to 1 for visualization)</li>
+      </ul>
+      <p class="mb-1">This tool lets you explore solutions for different potentials:</p>
+      <ul class="list-disc pl-6 text-sm">
+        <li><b>Infinite Square Well</b>: Particle trapped between two walls</li>
+        <li><b>Potential Barrier</b>: Region with higher potential energy</li>
+        <li><b>Harmonic Oscillator</b>: Parabolic potential (like a spring)</li>
+      </ul>
+    </div>
+    <div class="flex flex-col md:flex-row gap-6 mb-6">
+      <div class="flex-1">
+        <label class="block text-gray-600 mb-2" for="potential">Potential Type</label>
+        <select id="potential" class="w-full p-2 border rounded">
+          <option value="well">Infinite Square Well</option>
+          <option value="barrier">Potential Barrier</option>
+          <option value="harmonic">Harmonic Oscillator</option>
+        </select>
+      </div>
+      <div class="flex-1">
+        <label class="block text-gray-600 mb-2" for="energy">Energy Level (n)</label>
+        <input id="energy" type="number" min="1" max="5" value="1" class="w-full p-2 border rounded" />
+      </div>
+    </div>
+    <div class="bg-gray-100 rounded p-4 flex flex-col items-center">
+      <canvas id="schrodinger-canvas" width="600" height="300" class="mb-2 border rounded shadow"></canvas>
+      <span class="text-xs text-gray-500">(Drag to zoom and pan. Change parameters to update the plot.)</span>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html> 

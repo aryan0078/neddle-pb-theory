@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelly Criterion Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col items-center py-10">
+    <h1 class="text-3xl font-bold mb-6 text-blue-700">Kelly Criterion Calculator</h1>
+    <div class="bg-white p-6 rounded-lg shadow w-full max-w-lg mb-8">
+        <div class="mb-4">
+            <label for="prob" class="block font-medium text-gray-700 mb-1">Probability of Winning (p):</label>
+            <input type="number" id="prob" min="0" max="1" step="0.01" value="0.5" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        </div>
+        <div class="mb-4">
+            <label for="odds" class="block font-medium text-gray-700 mb-1">Odds (b, e.g. 1 for even money):</label>
+            <input type="number" id="odds" min="0" step="0.01" value="1" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        </div>
+        <div class="mb-4">
+            <label for="bankroll" class="block font-medium text-gray-700 mb-1">Current Bankroll (optional):</label>
+            <input type="number" id="bankroll" min="0" step="0.01" placeholder="1000" class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        </div>
+        <button id="calcBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded transition w-full">Calculate</button>
+        <div id="error" class="text-red-500 mt-2 hidden"></div>
+        <div id="result" class="mt-6"></div>
+    </div>
+    <div class="max-w-xl text-gray-600 text-sm bg-white p-4 rounded shadow">
+        <div class="font-semibold text-gray-800 mb-2">What is the Kelly Criterion?</div>
+        <p>The Kelly Criterion is a formula used to determine the optimal size of a series of bets to maximize the logarithm of wealth over time. The formula is:</p>
+        <pre class="bg-gray-100 rounded p-2 my-2">f* = (bp - q) / b</pre>
+        <p>where:</p>
+        <ul class="list-disc ml-6 mb-2">
+            <li><b>f*</b> = fraction of bankroll to wager</li>
+            <li><b>p</b> = probability of winning</li>
+            <li><b>q</b> = probability of losing (1 - p)</li>
+            <li><b>b</b> = odds received on the wager (net, e.g. 1 for even money)</li>
+        </ul>
+    </div>
+    <footer class="mt-10 text-gray-400 text-sm">Kelly Criterion Calculator &copy; 2024</footer>
+    <script>
+        function calculateKelly(p, b) {
+            const q = 1 - p;
+            return (b * p - q) / b;
+        }
+
+        document.getElementById('calcBtn').onclick = function() {
+            const p = parseFloat(document.getElementById('prob').value);
+            const b = parseFloat(document.getElementById('odds').value);
+            const bankroll = parseFloat(document.getElementById('bankroll').value);
+            const errorDiv = document.getElementById('error');
+            const resultDiv = document.getElementById('result');
+            errorDiv.classList.add('hidden');
+            resultDiv.innerHTML = '';
+
+            if (isNaN(p) || isNaN(b) || p <= 0 || p >= 1 || b <= 0) {
+                errorDiv.textContent = 'Please enter valid values: p between 0 and 1 (exclusive), odds > 0.';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            const f = calculateKelly(p, b);
+            if (f <= 0) {
+                resultDiv.innerHTML = '<div class="text-red-600 font-semibold">No bet recommended (Kelly fraction ≤ 0).</div>';
+                return;
+            }
+            let betStr = `<div class="text-lg font-semibold text-green-700 mb-2">Recommended Fraction to Bet: ${(f*100).toFixed(2)}%</div>`;
+            if (!isNaN(bankroll) && bankroll > 0) {
+                betStr += `<div class="text-md text-blue-700">Amount to Bet: <b>${(f*bankroll).toFixed(2)}</b> (of bankroll ${bankroll})</div>`;
+            }
+            resultDiv.innerHTML = betStr;
+        };
+    </script>
+</body>
+</html> 
