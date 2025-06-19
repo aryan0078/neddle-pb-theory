@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buffon's Needle Problem Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col items-center py-10">
+    <h1 class="text-3xl font-bold mb-6 text-blue-700">Buffon's Needle Problem Simulator</h1>
+    <div id="controls" class="flex flex-col md:flex-row items-center gap-4 bg-white p-6 rounded-lg shadow mb-8">
+        <button id="throwBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded transition">Throw Needle</button>
+        <button id="resetBtn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold px-4 py-2 rounded transition">Reset</button>
+        <label for="throws" class="font-medium text-gray-700">Throws per click:</label>
+        <input type="number" id="throws" value="1" min="1" max="1000" class="w-20 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        <div class="flex flex-col md:ml-6">
+            <div id="probability" class="text-lg font-semibold text-blue-800">Probability: N/A</div>
+            <div id="pi-estimate" class="text-lg font-semibold text-green-700">Estimated π: N/A</div>
+            <div id="count" class="text-gray-600">Total Throws: 0, Crosses: 0</div>
+        </div>
+    </div>
+    <div id="canvas-container" class="bg-white p-4 rounded-lg shadow">
+        <canvas id="needleCanvas" width="400" height="400" class="border border-gray-300 rounded"></canvas>
+    </div>
+    <footer class="mt-10 text-gray-400 text-sm">Buffon's Needle simulation &copy; 2024</footer>
+    <script>
+        // Buffon's Needle Simulation
+        const canvas = document.getElementById('needleCanvas');
+        const ctx = canvas.getContext('2d');
+        const throwBtn = document.getElementById('throwBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const probabilityDiv = document.getElementById('probability');
+        const piEstimateDiv = document.getElementById('pi-estimate');
+        const countDiv = document.getElementById('count');
+        const throwsInput = document.getElementById('throws');
+
+        // Parameters
+        const lineSpacing = 40; // Distance between parallel lines
+        const needleLength = 30; // Length of the needle
+        const canvasSize = 400;
+        const numLines = Math.floor(canvasSize / lineSpacing);
+
+        let totalThrows = 0;
+        let crosses = 0;
+
+        function drawLines() {
+            ctx.clearRect(0, 0, canvasSize, canvasSize);
+            ctx.strokeStyle = '#cbd5e1'; // Tailwind gray-300
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= numLines; i++) {
+                ctx.beginPath();
+                ctx.moveTo(i * lineSpacing, 0);
+                ctx.lineTo(i * lineSpacing, canvasSize);
+                ctx.stroke();
+            }
+        }
+
+        function throwNeedle() {
+            // Random center point
+            const x = Math.random() * canvasSize;
+            const y = Math.random() * canvasSize;
+            // Random angle
+            const theta = Math.random() * Math.PI;
+            // Needle endpoints
+            const x1 = x - (needleLength / 2) * Math.cos(theta);
+            const y1 = y - (needleLength / 2) * Math.sin(theta);
+            const x2 = x + (needleLength / 2) * Math.cos(theta);
+            const y2 = y + (needleLength / 2) * Math.sin(theta);
+
+            // Check if it crosses a line
+            const line1 = Math.floor(x1 / lineSpacing);
+            const line2 = Math.floor(x2 / lineSpacing);
+            const crossesLine = line1 !== line2;
+
+            // Draw needle
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.strokeStyle = crossesLine ? '#ef4444' : '#2563eb'; // Tailwind red-500 or blue-600
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            return crossesLine;
+        }
+
+        function updateProbability() {
+            if (totalThrows === 0) {
+                probabilityDiv.textContent = 'Probability: N/A';
+                piEstimateDiv.textContent = 'Estimated π: N/A';
+            } else {
+                const probability = crosses / totalThrows;
+                probabilityDiv.textContent = `Probability: ${(probability).toFixed(5)} (${crosses} / ${totalThrows})`;
+                if (crosses === 0) {
+                    piEstimateDiv.textContent = 'Estimated π: N/A';
+                } else {
+                    // Estimate pi: P = (2 * L * N) / (T * D)
+                    const piEstimate = (2 * needleLength * totalThrows) / (crosses * lineSpacing);
+                    piEstimateDiv.textContent = `Estimated π: ${piEstimate.toFixed(5)}`;
+                }
+            }
+            countDiv.textContent = `Total Throws: ${totalThrows}, Crosses: ${crosses}`;
+        }
+
+        function throwNeedles(n) {
+            for (let i = 0; i < n; i++) {
+                totalThrows++;
+                if (throwNeedle()) crosses++;
+            }
+            updateProbability();
+        }
+
+        function reset() {
+            totalThrows = 0;
+            crosses = 0;
+            drawLines();
+            updateProbability();
+        }
+
+        throwBtn.addEventListener('click', () => {
+            const n = parseInt(throwsInput.value, 10) || 1;
+            throwNeedles(n);
+        });
+        resetBtn.addEventListener('click', reset);
+
+        // Draw a circle representing the current estimate of pi
+        function drawCircle() {
+            // Draw circle in lower right corner
+            const r = 60;
+            const cx = canvasSize - r - 20;
+            const cy = canvasSize - r - 20;
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#334155'; // Tailwind slate-700
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            // Draw arc for estimated pi
+            if (crosses > 0) {
+                const piEstimate = (2 * needleLength * totalThrows) / (crosses * lineSpacing);
+                ctx.beginPath();
+                ctx.arc(cx, cy, r, 0, Math.min(piEstimate / Math.PI, 2) * Math.PI);
+                ctx.strokeStyle = '#f59e42'; // Tailwind orange-400
+                ctx.lineWidth = 6;
+                ctx.stroke();
+            }
+            ctx.restore();
+        }
+
+        // Redraw everything
+        function redraw() {
+            drawLines();
+            drawCircle();
+        }
+
+        // Patch throwNeedle to also redraw the circle
+        const origThrowNeedle = throwNeedle;
+        throwNeedle = function() {
+            const result = origThrowNeedle.apply(this, arguments);
+            drawCircle();
+            return result;
+        };
+
+        // Patch reset to redraw the circle
+        const origReset = reset;
+        reset = function() {
+            origReset.apply(this, arguments);
+            drawCircle();
+        };
+
+        // Initial draw
+        drawLines();
+        drawCircle();
+        updateProbability();
+    </script>
+</body>
+</html> 
